@@ -22,7 +22,7 @@ function varargout = dip_assignment_2(varargin)
 
 % Edit the above text to modify the response to help dip_assignment_2
 
-% Last Modified by GUIDE v2.5 21-Nov-2017 11:42:22
+% Last Modified by GUIDE v2.5 22-Nov-2017 09:31:35
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -119,8 +119,10 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global im;
-n = 1; %order
-d = 50; %cutoff
+global slider_value1;
+global slider_value2;
+n = slider_value1; %order
+d = slider_value2; %cutoff
 h = size(im, 1);
 w = size(im, 2);
 fftim = fftshift(fft2(double(im)));
@@ -151,10 +153,10 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global im;
-global asdf1;
-global asdf2;
-n = text1; %order
-d = text2; %cutoff
+global slider_value1;
+global slider_value2;
+n = slider_value1; %order
+d = slider_value2; %cutoff
 h = size(im, 1);
 w = size(im, 2);
 fftim = fftshift(fft2(double(im)));
@@ -162,12 +164,12 @@ fftim = fftshift(fft2(double(im)));
 
 B = sqrt(2) - 1;
 D = sqrt(x.^2 + y.^2);
-llp = 1 ./ (1 + B * (d ./ D).^(2 * n));
+hhp = 1 ./ (1 + B * (d ./ D).^(2 * n));
 
 axes(handles.axes3);
-imshow(llp);
+imshow(hhp);
 
-out_spec_centre = fftim .* llp;
+out_spec_centre = fftim .* hhp;
 axes(handles.axes4);
 imshow(log(1 + abs(out_spec_centre)), []);
 
@@ -185,59 +187,52 @@ function pushbutton3_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton3 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+global im;
+global slider_value1;
+global slider_value2;
+global slider_value3;
 
+f = double(im);
+[nx ny] = size(f);
+f = uint8(f);
+fftI = fft2(f,2*nx-1,2*ny-1);
+fftI = fftshift(fftI);
 
+% Initialize filter.
+filter1 = ones(2*nx-1,2*ny-1);
+filter2 = ones(2*nx-1,2*ny-1);
+filter3 = ones(2*nx-1,2*ny-1);
 
-function edit1_Callback(hObject, eventdata, handles)
-% hObject    handle to edit1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit1 as text
-%        str2double(get(hObject,'String')) returns contents of edit1 as a double
-global asdf1;
-asdf1 = str2double(get(hObject, 'String'))
-% text1 = char(text1);
-% text1 = deblank(text1);
-% text1 = uint8(text1);
-
-% --- Executes during object creation, after setting all properties.
-function edit1_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
+for i = 1:2*nx-1
+    for j =1:2*ny-1
+        dist = ((i-(nx+1))^2 + (j-(ny+1))^2)^.5;
+        % Create Butterworth filter.
+        filter1(i,j)= 1/(1 + (dist/slider_value3)^(2*slider_value1));
+        filter2(i,j) = 1/(1 + (dist/slider_value2)^(2*slider_value1));
+        filter3(i,j)= 1.0 - filter2(i,j);
+        filter3(i,j) = filter1(i,j).*filter3(i,j);
+    end
 end
+% Update image with passed frequencies.
+filtered_image = fftI + filter3.*fftI;
 
+a1 = log(1+abs(filter3));
+fm = max(a1(:));
+axes(handles.axes3);
+imshow(im2uint8(a1/fm));
 
+a1 = log(1+abs(filtered_image));
+fm = max(a1(:));
+axes(handles.axes4);
+imshow(im2uint8(a1/fm));
 
-function edit2_Callback(hObject, eventdata, handles)
-% hObject    handle to edit2 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+filtered_image = ifftshift(filtered_image);
+filtered_image = ifft2(filtered_image,2*nx-1,2*ny-1);
+filtered_image = real(filtered_image(1:nx,1:ny));
+filtered_image = uint8(filtered_image);
 
-% Hints: get(hObject,'String') returns contents of edit2 as text
-%        str2double(get(hObject,'String')) returns contents of edit2 as a double
-global asdf2;
-asdf2 = get(hObject, 'String');
-asdf2 = char(asdf2)
-
-% --- Executes during object creation, after setting all properties.
-function edit2_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit2 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
+axes(handles.axes5);
+imshow(filtered_image,[])
 
 % --- Executes on slider movement.
 function slider1_Callback(hObject, eventdata, handles)
@@ -247,7 +242,10 @@ function slider1_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-
+global slider_value1;
+slider_value1 = get(handles.slider1, 'value');
+data1=num2str(slider_value1);
+set(handles.text1,'String',data1);
 
 % --- Executes during object creation, after setting all properties.
 function slider1_CreateFcn(hObject, eventdata, handles)
@@ -269,7 +267,10 @@ function slider2_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-
+global slider_value2;
+slider_value2 = get(handles.slider2, 'value');
+data2=num2str(slider_value2);
+set(handles.text2,'String',data2);
 
 % --- Executes during object creation, after setting all properties.
 function slider2_CreateFcn(hObject, eventdata, handles)
@@ -291,7 +292,10 @@ function slider3_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-
+global slider_value3;
+slider_value3 = get(handles.slider3, 'value');
+data3=num2str(slider_value3);
+set(handles.text3,'String',data3);
 
 % --- Executes during object creation, after setting all properties.
 function slider3_CreateFcn(hObject, eventdata, handles)
