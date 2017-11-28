@@ -22,7 +22,7 @@ function varargout = dip_assignment_2(varargin)
 
 % Edit the above text to modify the response to help dip_assignment_2
 
-% Last Modified by GUIDE v2.5 26-Nov-2017 21:54:01
+% Last Modified by GUIDE v2.5 28-Nov-2017 10:42:15
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -318,14 +318,14 @@ function radiobutton1_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of radiobutton1
 global radio1;
 global im;
-radio1 = get(hObject, 'Value')
+radio1 = get(hObject, 'Value');
 if radio1 == 1
-    im2 = dct2(im)
-    s = 
-    im2(abs(im2) < 5) = 0;
-    im2 = idct2(im2);
+    dctim = dct2(im);
+    dctim(abs(dctim) < 25) = 0;
+    rim = idct2(dctim);
+    rim = uint8(rim);
     axes(handles.axes6);
-    imshow(im2);
+    imshow(rim);
 end
 set(handles.radiobutton2,'Value',0);
 set(handles.radiobutton3,'Value',0);
@@ -341,13 +341,15 @@ function radiobutton2_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of radiobutton2
 global radio2;
 global im;
-radio2 = get(hObject, 'Value')
+radio2 = get(hObject, 'Value');
 if radio2 == 1
-    im2 = dct2(im);
+    dctim = dct2(im);
+    dctim(abs(dctim) < 50) = 0;
+    rim = idct2(dctim);
+    rim = uint8(rim);
     axes(handles.axes6);
-    imshow(im2);
-end    
-    
+    imshow(rim);
+end 
 set(handles.radiobutton1,'Value',0);
 set(handles.radiobutton3,'Value',0);
 set(handles.radiobutton4,'Value',0);
@@ -361,11 +363,14 @@ function radiobutton3_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of radiobutton3
 global radio3;
 global im;
-radio3 = get(hObject, 'Value')
+radio3 = get(hObject, 'Value');
 if radio3 == 1
-    im2 = dct2(im);
+    dctim = dct2(im);
+    dctim(abs(dctim) < 75) = 0;
+    rim = idct2(dctim);
+    rim = uint8(rim);
     axes(handles.axes6);
-    imshow(im2);
+    imshow(rim);
 end
 set(handles.radiobutton2,'Value',0);
 set(handles.radiobutton1,'Value',0);
@@ -380,11 +385,14 @@ function radiobutton4_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of radiobutton4
 global radio4;
 global im;
-radio4 = get(hObject, 'Value')
+radio4 = get(hObject, 'Value');
 if radio4 == 1
-    im2 = dct2(im);
+    dctim = dct2(im);
+    dctim(abs(dctim) < 100) = 0;
+    rim = idct2(dctim);
+    rim = uint8(rim);
     axes(handles.axes6);
-    imshow(im2);
+    imshow(rim);
 end
 set(handles.radiobutton2,'Value',0);
 set(handles.radiobutton3,'Value',0);

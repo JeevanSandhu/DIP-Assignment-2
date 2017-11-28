@@ -2,7 +2,7 @@ im = imread('images/cameraman.tif');
 im = double(im);
 
 dctim = dct2(im);
-dctim(abs(dctim) < 10) = 0;
+dctim(abs(dctim) < 100) = 0;
 rim = idct2(dctim);
 imshowpair(im, rim, 'montage');
 
