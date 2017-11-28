@@ -22,7 +22,7 @@ function varargout = dip_assignment_2(varargin)
 
 % Edit the above text to modify the response to help dip_assignment_2
 
-% Last Modified by GUIDE v2.5 22-Nov-2017 09:31:35
+% Last Modified by GUIDE v2.5 26-Nov-2017 21:54:01
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -307,3 +307,85 @@ function slider3_CreateFcn(hObject, eventdata, handles)
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
+
+
+% --- Executes on button press in radiobutton1.
+function radiobutton1_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobutton1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of radiobutton1
+global radio1;
+global im;
+radio1 = get(hObject, 'Value')
+if radio1 == 1
+    im2 = dct2(im)
+    s = 
+    im2(abs(im2) < 5) = 0;
+    im2 = idct2(im2);
+    axes(handles.axes6);
+    imshow(im2);
+end
+set(handles.radiobutton2,'Value',0);
+set(handles.radiobutton3,'Value',0);
+set(handles.radiobutton4,'Value',0);
+
+
+% --- Executes on button press in radiobutton2.
+function radiobutton2_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobutton2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of radiobutton2
+global radio2;
+global im;
+radio2 = get(hObject, 'Value')
+if radio2 == 1
+    im2 = dct2(im);
+    axes(handles.axes6);
+    imshow(im2);
+end    
+    
+set(handles.radiobutton1,'Value',0);
+set(handles.radiobutton3,'Value',0);
+set(handles.radiobutton4,'Value',0);
+
+% --- Executes on button press in radiobutton3.
+function radiobutton3_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobutton3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of radiobutton3
+global radio3;
+global im;
+radio3 = get(hObject, 'Value')
+if radio3 == 1
+    im2 = dct2(im);
+    axes(handles.axes6);
+    imshow(im2);
+end
+set(handles.radiobutton2,'Value',0);
+set(handles.radiobutton1,'Value',0);
+set(handles.radiobutton4,'Value',0);
+
+% --- Executes on button press in radiobutton4.
+function radiobutton4_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobutton4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of radiobutton4
+global radio4;
+global im;
+radio4 = get(hObject, 'Value')
+if radio4 == 1
+    im2 = dct2(im);
+    axes(handles.axes6);
+    imshow(im2);
+end
+set(handles.radiobutton2,'Value',0);
+set(handles.radiobutton3,'Value',0);
+set(handles.radiobutton1,'Value',0);
